@@ -1,0 +1,11 @@
+ifconfig
+
+sudo service apache2 start
+sudo service apache2 status
+
+sudo ip addr add 172.16.10.1/24 dev enp0s3
+
+sudo nano etc/apache2/apache2.conf == make keepalive "on" max request 2
+
+In firefox - 
+about:config
