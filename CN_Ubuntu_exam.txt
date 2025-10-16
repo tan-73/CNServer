@@ -1,0 +1,126 @@
+//AUTHENTICATION
+
+#terminal
+
+sudo service apache2 start
+sudo service apache2 status
+
+sudo htpasswd -c /etc/apache2/.htpasswd seed
+
+new pass
+
+#Run wireshark -any
+#Browsesr clr htsy 
+http://loaclhost
+
+#wireshark
+
+filter - http 
+200k/hhtp.1.1 - tcp stream follow
+auth id copy 
+
+#terminal 
+
+echo <auth_id>
+echo <auth_id>|base64 -d
+
+---------------------------------------
+
+//terminal ping and address on wireshark
+
+//wiresharK - browser - http://www.example.com - wireshark - http - text/html - follow tcp stream -syn/syn+ack/ack
+
+//wiresharK - browser - http://www.example.com - wireshark - ssl - text/html - follow tcp stream -syn/syn+ack/ack
+
+-------------------------------------
+
+//Cookie
+
+cd /var/www/html
+nano demo.php
+
+<html>
+<?php 
+setcookie("namecookie","netqwerty",time()+123);
+setcookie("nickname","work");
+?>
+<img src = "img1.jpg" width ="300" height = "300" title ="password"/>
+</html> 
+
+terminal - ls
+
+#Wireshark -any
+
+#browser - clr hsty - localhost/demo.php -pass - setting - preferences - search cookies 
+
+#browser top right - 3 lines - web developer - storage inspector 
+
+# wireshark -http - 200ok text/html - follow tcp stream 
+
+all the 3 should show cookies 
+
+------------------------------------------
+
+// Clinet and Server
+
+open two terminal and open editor for server and client 
+
+--client code
+
+#include <stdio.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+
+int main(int c, char *v[]) {
+    int s = socket(AF_INET, SOCK_STREAM, 0), n;
+    char b[4096];
+    struct sockaddr_in a = {AF_INET, htons(atoi(v[3]))};
+    a.sin_addr.s_addr = inet_addr(v[1]);
+
+    connect(s, (void *)&a, sizeof(a));         // connect to server
+    write(s, v[2], strlen(v[2]) + 1);          // send filename
+    while ((n = read(s, b, sizeof(b))) > 0)    // read & display
+        write(1, b, n);
+}
+
+--server code
+
+
+#include <stdio.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdlib.h>
+
+int main(int c, char *v[]) {
+    int s = socket(AF_INET, SOCK_STREAM, 0), ns, f, n;
+    char b[4096];
+    struct sockaddr_in a = {AF_INET, htons(atoi(v[1])), INADDR_ANY};
+
+    bind(s, (void *)&a, sizeof(a));  // bind to given port
+    listen(s, 1);                    // listen for connection
+    ns = accept(s, 0, 0);            // accept connection
+    read(ns, b, sizeof(b));          // get filename
+
+    if ((f = open(b, O_RDONLY)) < 0) { write(ns, "File not found\n", 15); return 1; }
+    while ((n = read(f, b, sizeof(b))) > 0) write(ns, b, n); // send file content
+    puts("Transfer Done");
+}
+
+--
+create a editor with file name ex.txt and add text  
+
+run (on server terminal)
+gcc server.c -o server
+./server 5003
+
+run (on client terminal)
+gcc client.c -o client
+./client 127.0.0.1 ex.txt 5003
+
+
+

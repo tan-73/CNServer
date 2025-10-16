@@ -1,0 +1,70 @@
+// 6. ICMP-Test connectivity
+
+add 3 pc +1 switch + router(2811) + 1 switch + 3 pc 
+
+connect all the components 
+
+got to router change the interface 192.168.1.1 and for interface 2 192.168.2.1
+
+
+got to pcs and assign ip address for all
+change the default gateway of all the pc of interface 1 to 192.168.1.1 similarly for interface 2 add 192.168.2.1
+
+add PDU to any 2 pc and run the simulation
+
+And explain the theory
+
+-------------------------------------------
+
+// DHCP and DNS
+
+(interface 1 - 3 pc, 1 switch) - router - (interface 2 - 3 server DHCP, DNS, Web server) + 1 pc 
+
+Connect every component 
+
+Firstly in router for interface 1 add ip address - 192.168.1.1
+
+In router for interface 2 add ip address - 192.168.2.1 . Also enable the router 
+
+In DHCP server add ipconfig and add the ip address 192.168.2.2 and default gateway as same as interface 1(192.168.2.1)
+
+Follow the same procedure and for dns server address, add the DNS ip address
+
+In DHCP and DNS enable the servies 
+
+Now for the pc ipconfig and enable DHCP
+
+# Now to make the interface 1 take DHCP address
+
+Go to DHCP server add serverpool with enter def.gateway and DNS addr. and start from 2 -> 10\
+
+Similarly, DHCP server add serverpool1 with enter def.gateway of interface 1 and DNS addr. and start from 1 -> 10
+
+CLI commands in router :
+
+exit 
+enable
+configure t
+interface FastEthernet 0/0
+ip helper-address 192.168.2.2
+no shutdown
+do write memory
+
+now open pc and add DHCP 
+
+# Now we are done with DHCP
+ 
+
+# For DNS
+
+Go to Dns server and add a name as "example"
+and add webserver ip addesss(192.168.2.4)
+
+Open the interface 1 pc and click on http browser
+Type the name (example)
+
+u'll get some links
+
+Done
+
+
